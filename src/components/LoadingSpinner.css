@@ -1,0 +1,21 @@
+@keyframes rotateAnimation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loadingSpinner_circle {
+	border-left-color: #acacac !important;
+	animation: rotateAnimation 1.5s linear infinite forwards;
+}
+
+.loadingSpinner_circle .loadingSpinner_circle {
+	animation-delay: 0.5s;
+}
+
+.loadingSpinner_circle .loadingSpinner_circle .loadingSpinner_circle {
+	animation-delay: 1s;
+}

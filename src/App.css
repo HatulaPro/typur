@@ -1,0 +1,16 @@
+@keyframes flicker {
+	from {
+		background-image: linear-gradient(to bottom, white, white);
+	}
+	to {
+		background-image: linear-gradient(to bottom, transparent, transparent);
+	}
+}
+
+.App_highlightedText {
+	background-image: linear-gradient(to bottom, white, white);
+	background-size: 2px;
+	background-repeat: repeat-y;
+	background-position-x: 100%;
+	animation: flicker 1s steps(2) infinite forwards;
+}
