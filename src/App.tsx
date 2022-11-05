@@ -27,6 +27,7 @@ function App() {
 		},
 		{ refetchOnWindowFocus: false }
 	);
+	console.log(quote);
 
 	return (
 		<div className="bg-gray-800 text-white h-screen">
@@ -35,7 +36,7 @@ function App() {
 					<LoadingSpinner />
 				</div>
 			) : (
-				<Sentence content={quote.content} refetch={refetch} />
+				<Sentence content={quote.content} author={quote.author} refetch={refetch} />
 			)}
 		</div>
 	);

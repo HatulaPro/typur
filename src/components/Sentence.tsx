@@ -32,7 +32,7 @@ function useTimer(enabled: boolean, halted: boolean): number | null {
 	return enabled ? timeInSecs : null;
 }
 
-export function Sentence({ content, refetch }: { content: string; refetch: () => void }) {
+export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
 	const splitWords = useMemo(() => content.split(' '), [content]);
 	const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 	const [currentWordStartingIndex, setCurrentWordStartingIndex] = useState<number>(0);
@@ -80,8 +80,8 @@ export function Sentence({ content, refetch }: { content: string; refetch: () =>
 				)}
 			</div>
 
-			<div className="flex-grow">
-				<h1 className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 w-4/5 m-auto')}>
+			<div className="flex-grow w-4/5 ">
+				<h1 className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 m-auto')}>
 					{hasCompleted ? (
 						<span className="text-green-500">{content}</span>
 					) : (
@@ -95,6 +95,9 @@ export function Sentence({ content, refetch }: { content: string; refetch: () =>
 						</>
 					)}
 				</h1>
+				<div className={cx(hasCompleted ? 'max-h-full' : 'max-h-0', 'overflow-hidden transition-all')}>
+					<p className="m-2 text-md sm:text-xl">- {author}</p>
+				</div>
 			</div>
 			<div className="flex-grow w-5/6 md:w-1/2 flex justify-start sm:justify-center flex-col">
 				<input type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
