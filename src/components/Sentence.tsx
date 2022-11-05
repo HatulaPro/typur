@@ -71,7 +71,7 @@ export function Sentence({ content, refetch }: { content: string; refetch: () =>
 	}
 	return (
 		<div className="flex flex-col h-full justify-evenly items-center">
-			<div className={cx('text-center flex justify-center flex-col transition-all pt-4', hasCompleted ? 'flex-grow text-3xl' : 'h-8')}>
+			<div className={cx('text-center flex justify-center flex-col transition-all mt-4', hasCompleted ? 'flex-grow text-3xl' : 'md:h-16 h-8')}>
 				{timeInSecs !== null && (
 					<>
 						<p>{timeInSecs}s</p>
@@ -81,7 +81,7 @@ export function Sentence({ content, refetch }: { content: string; refetch: () =>
 			</div>
 
 			<div className="flex-grow">
-				<h1 className={cx(hasCompleted ? 'text-6xl' : 'text-7xl', 'text-center transition-all pt-20 w-4/5 m-auto')}>
+				<h1 className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 w-4/5 m-auto')}>
 					{hasCompleted ? (
 						<span className="text-green-500">{content}</span>
 					) : (
@@ -96,13 +96,13 @@ export function Sentence({ content, refetch }: { content: string; refetch: () =>
 					)}
 				</h1>
 			</div>
-			<div className="flex-grow w-1/2 flex justify-center flex-col">
-				<input type="text" disabled={hasCompleted} className="text-center text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
-				<div className="flex justify-evenly my-8">
-					<button className="w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-xl px-3 py-2" onClick={resetState}>
+			<div className="flex-grow w-5/6 md:w-1/2 flex justify-start sm:justify-center flex-col">
+				<input type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
+				<div className="flex justify-evenly mt-4 md:mt-8">
+					<button className="w-28 sm:w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={resetState}>
 						RESTART
 					</button>
-					<button className="w-36 hover:bg-orange-700 transition-all bg-orange-800 rounded text-xl px-3 py-2" onClick={refetch}>
+					<button className="w-28 sm:w-36 hover:bg-orange-700 transition-all bg-orange-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={refetch}>
 						NEW QUOTE
 					</button>
 				</div>
