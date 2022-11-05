@@ -86,7 +86,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	}
 
 	function share() {
-		navigator.share({ title: 'Can you type faster than me?', text: `I managed to achieve ${Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs!) * 60)} characters per minute.` });
+		navigator.share({ title: 'Can you type faster than me?', text: `I got ${Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs!) * 60)} characters per minute. You?`, url: 'https://hatulapro.github.io/typur/' });
 	}
 
 	return (
