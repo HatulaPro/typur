@@ -71,9 +71,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	}
 
 	function share() {
-		if (Boolean(navigator.share)) {
-			navigator.share({ title: 'Can you type faster than me?', text: `I managed to achieve ${Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs!) * 60)} characters per minute.` });
-		}
+		navigator.share({ title: 'Can you type faster than me?', text: `I managed to achieve ${Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs!) * 60)} characters per minute.` });
 	}
 
 	return (
@@ -112,9 +110,11 @@ export function Sentence({ content, author, refetch }: { content: string; author
 					<button className="w-28 sm:w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={resetState}>
 						RESTART
 					</button>
-					<button className={cx(' hover:bg-blue-700 transition-all bg-blue-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2', hasCompleted ? 'w-28 sm:w-36' : 'opacity-0 flex-none w-0')} onClick={share}>
-						SHARE
-					</button>
+					{Boolean(navigator.share) && (
+						<button className={cx(' hover:bg-blue-700 transition-all bg-blue-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2', hasCompleted ? 'w-28 sm:w-36' : 'opacity-0 flex-none w-0')} onClick={share}>
+							SHARE
+						</button>
+					)}
 					<button className="w-28 sm:w-36 hover:bg-orange-600 transition-all bg-orange-500 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={refetch}>
 						NEW QUOTE
 					</button>
