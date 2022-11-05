@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "vite --host 0.0.0.0",
 		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"deploy": "yarn build && git add -A && git commit -m 'deploy' && git push"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-svg-core": "^6.2.0",
