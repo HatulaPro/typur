@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { settingsContext } from '../App';
 import { cx } from '../general';
 
 function lastMatchingIndex(a?: string, b?: string): number {
@@ -34,6 +35,8 @@ function useTimer(enabled: boolean, halted: boolean): number | null {
 
 export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
 	const splitWords = useMemo(() => content.split(' '), [content]);
+	const textRef = useRef<HTMLHeadingElement | null>(null);
+	const { settings } = useContext(settingsContext);
 	const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 	const [currentWordStartingIndex, setCurrentWordStartingIndex] = useState<number>(0);
 	const [currentInput, setCurrentInput] = useState<string>('');
@@ -53,6 +56,20 @@ export function Sentence({ content, author, refetch }: { content: string; author
 		setCurrentWordStartingIndex(0);
 		setCurrentInput('');
 		setCompleted(false);
+	}
+
+	if (redContent.length && settings.hardMode) {
+		resetState();
+		textRef.current?.animate(
+			[
+				{ transform: 'translateX(0%)', color: 'red' },
+				{ transform: 'translateX(-8px)', color: 'red' },
+				{ transform: 'translateX(8px)', color: 'red' },
+				{ transform: 'translateX(-8px)', color: 'red' },
+				{ transform: 'translateX(0%)', color: 'red' },
+			],
+			{ duration: 300 }
+		);
 	}
 
 	function onNextChar(e: React.ChangeEvent<HTMLInputElement>) {
@@ -84,7 +101,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 			</div>
 
 			<div className="flex-grow w-4/5 ">
-				<h1 className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 m-auto')}>
+				<h1 ref={textRef} className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 m-auto')}>
 					{hasCompleted ? (
 						<span className="text-green-500">{content}</span>
 					) : (
