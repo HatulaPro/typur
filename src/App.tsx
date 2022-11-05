@@ -35,7 +35,7 @@ function App() {
 					<LoadingSpinner />
 				</div>
 			) : (
-				<Sentence content={quote.content} onSuccess={refetch} />
+				<Sentence content={quote.content} refetch={refetch} />
 			)}
 		</div>
 	);
