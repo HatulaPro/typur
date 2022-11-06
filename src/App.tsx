@@ -86,7 +86,7 @@ function App() {
 	} = useQuery(
 		['quote'],
 		({ signal }) => {
-			return fetch('https://api.quotable.io/random', { signal }).then((res) => res.json() as Promise<RandomQuoteResponse>);
+			return fetch('https://api.quotable.io/random?maxLength=180', { signal }).then((res) => res.json() as Promise<RandomQuoteResponse>);
 		},
 		{ refetchOnWindowFocus: false }
 	);
