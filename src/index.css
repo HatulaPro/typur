@@ -12,6 +12,7 @@ input[type='checkbox'] {
 input[type='checkbox'] + label {
 	position: relative;
 	user-select: none;
+	margin-left: 4rem;
 }
 
 input[type='checkbox']:checked + label::before {
@@ -35,6 +36,7 @@ input[type='checkbox'] + label::before {
 
 input[type='checkbox'] + label::after {
 	content: '❌';
+	text-align: center;
 	font-size: 0.9rem;
 	position: absolute;
 	border-radius: 999px;

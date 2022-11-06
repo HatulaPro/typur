@@ -92,7 +92,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	return (
 		<div className="flex flex-col h-full justify-evenly items-center">
 			<div className={cx('text-center flex justify-center flex-col transition-all mt-4', hasCompleted ? 'flex-grow text-3xl' : 'md:h-16 h-8')}>
-				{timeInSecs !== null && (
+				{timeInSecs !== null && (settings.showTime || hasCompleted) && (
 					<>
 						<p>{timeInSecs}s</p>
 						<p>{Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs) * 60)} chars/minute</p>

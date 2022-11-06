@@ -20,11 +20,12 @@ type RandomQuoteResponse = {
 
 type Settings = {
 	hardMode: boolean;
+	showTime: boolean;
 };
 
 function getCurrentSettings() {
 	const currentSettings = localStorage.getItem('settings');
-	return currentSettings ? (JSON.parse(currentSettings) as Settings) : { hardMode: false };
+	return currentSettings ? (JSON.parse(currentSettings) as Settings) : { hardMode: false, showTime: true };
 }
 
 export const settingsContext = createContext<{ settings: Settings; setSettings: (s: Settings) => void }>({ settings: getCurrentSettings(), setSettings: (s: Settings) => null });
@@ -48,15 +49,27 @@ function SettingsMenu({ isOpen, setOpen }: { isOpen: boolean; setOpen: (isOpen: 
 		setSettings({ ...settings, hardMode: enabled });
 	}
 
+	function updateShowTimeSetting(enabled: boolean) {
+		setSettings({ ...settings, showTime: enabled });
+	}
+
 	return (
 		<div>
 			<div className={cx('fixed top-0 h-screen w-screen bg-gray-800 opacity-20', isOpen ? 'left-0' : '-left-full')} onClick={() => setOpen(false)}></div>
-			<div className={cx('fixed top-0 h-full bg-gray-200 max-w-sm w-4/5 transition-all text-center py-3 box-border', isOpen ? 'left-0' : '-left-full')}>
-				<h3 className="text-3xl">Settings</h3>
-				<div className="mt-2">
+			<div className={cx('fixed top-0 h-full bg-gray-200 max-w-sm w-4/5 transition-all py-3 box-border', isOpen ? 'left-0' : '-left-full')}>
+				<h3 className="text-3xl text-center">Settings</h3>
+
+				<div className="mt-2 ml-2">
 					<input type="checkbox" id="hardModeCheckbox" checked={settings.hardMode} onChange={(e) => updateHardModeSetting(e.target.checked)} />
 					<label htmlFor="hardModeCheckbox" className="text-xl">
 						Enable Hard Mode
+					</label>
+				</div>
+
+				<div className="mt-2 ml-2">
+					<input type="checkbox" id="showTimeCheckbox" checked={settings.showTime} onChange={(e) => updateShowTimeSetting(e.target.checked)} />
+					<label htmlFor="showTimeCheckbox" className="text-xl">
+						Show Time
 					</label>
 				</div>
 			</div>
