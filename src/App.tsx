@@ -55,7 +55,7 @@ function SettingsMenu({ isOpen, setOpen }: { isOpen: boolean; setOpen: (isOpen: 
 
 	return (
 		<div>
-			<div className={cx('fixed top-0 h-screen w-screen bg-gray-800 opacity-20', isOpen ? 'left-0' : '-left-full')} onClick={() => setOpen(false)}></div>
+			<div className={cx('fixed top-0 h-screen w-screen bg-gray-800 transition-all', isOpen ? 'left-0 opacity-80' : '-left-full opacity-0')} onClick={() => setOpen(false)}></div>
 			<div className={cx('fixed top-0 h-full bg-gray-200 max-w-sm w-4/5 transition-all py-3 box-border', isOpen ? 'left-0' : '-left-full')}>
 				<h3 className="text-3xl text-center">Settings</h3>
 
@@ -94,7 +94,7 @@ function App() {
 
 	return (
 		<SettingsContextProvider>
-			<div className={cx('bg-gray-800 text-white h-screen transition', settingsOpen && 'blur-sm')}>
+			<div className={cx('bg-gray-800 text-white h-screen transition')}>
 				{isLoading || isFetching || !quote ? (
 					<div className="h-full grid place-items-center">
 						<LoadingSpinner />
