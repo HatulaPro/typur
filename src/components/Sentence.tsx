@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { settingsContext } from '../App';
 import { cx } from '../general';
+import './Sentence.css';
 
 function lastMatchingIndex(a?: string, b?: string): number {
 	if (!a || !b) return 0;
@@ -85,8 +86,10 @@ export function Sentence({ content, author, refetch }: { content: string; author
 		}
 	}
 
+	const correctCharsCount = hasCompleted ? content.length : doneHalf.length + lastMatchIndex;
 	function share() {
-		navigator.share({ title: 'Can you type faster than me?', text: `I got ${Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs!) * 60)} characters per minute. You?`, url: 'https://hatulapro.github.io/typur/' });
+		doneHalf.length + lastMatchIndex;
+		navigator.share({ title: 'Can you type faster than me?', text: `I got ${Math.round((correctCharsCount / timeInSecs!) * 60)} characters per minute. You?`, url: 'https://hatulapro.github.io/typur/' });
 	}
 
 	return (
@@ -101,7 +104,11 @@ export function Sentence({ content, author, refetch }: { content: string; author
 			</div>
 
 			<div className="flex-grow w-4/5 ">
-				<h1 ref={textRef} className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all pt-4 sm:pt-10 md:pt-16 m-auto')}>
+				<div className={cx('flex mt-4 sm:mt-10 md:mt-16 items-center gap-1 m-auto w-4/5 max-w-xs sm:max-w-md lg:max-w-lg', correctCharsCount === 0 && 'opacity-0')}>
+					<div>{Math.round((correctCharsCount / content.length) * 100)}%</div>
+					<div className="bg-white h-2 flex-grow transition-all rounded-r Sentence_progressBar" style={{ maxWidth: `${(correctCharsCount / content.length) * 100}%` }}></div>
+				</div>
+				<h1 ref={textRef} className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all m-auto mt-2')}>
 					{hasCompleted ? (
 						<span className="text-green-500">{content}</span>
 					) : (
