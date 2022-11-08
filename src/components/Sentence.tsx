@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { settingsContext } from '../App';
 import { cx } from '../general';
 import { HistoryViewer } from './HistoryViewer';
+
 import './Sentence.css';
 
 function lastMatchingIndex(a?: string, b?: string): number {
@@ -53,12 +54,19 @@ function useHistory() {
 export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
 	const splitWords = useMemo(() => content.split(' '), [content]);
 	const textRef = useRef<HTMLHeadingElement | null>(null);
+	const inputRef = useRef<HTMLInputElement | null>(null);
 	const { settings } = useContext(settingsContext);
 	const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 	const [currentWordStartingIndex, setCurrentWordStartingIndex] = useState<number>(0);
 	const [currentInput, setCurrentInput] = useState<string>('');
 	const [hasCompleted, setCompleted] = useState<boolean>(false);
 	const [history, setHistory] = useHistory();
+
+	useEffect(() => {
+		if (inputRef.current && !hasCompleted) {
+			inputRef.current.focus();
+		}
+	}, [hasCompleted, inputRef.current]);
 
 	const doneHalf = splitWords ? splitWords.slice(0, currentWordIndex).join(' ') : '';
 
@@ -146,7 +154,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 			</div>
 			<HistoryViewer values={history} visible={hasCompleted} />
 			<div className="flex-grow w-5/6 md:w-1/2 flex justify-start sm:justify-center flex-col">
-				<input type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
+				<input ref={inputRef} type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
 				<div className="flex justify-evenly mt-4 md:mt-8 gap-1">
 					<button className="w-28 sm:w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={resetState}>
 						RESTART
@@ -156,7 +164,13 @@ export function Sentence({ content, author, refetch }: { content: string; author
 							SHARE
 						</button>
 					)}
-					<button className="w-28 sm:w-36 hover:bg-orange-600 transition-all bg-orange-500 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={refetch}>
+					<button
+						className="w-28 sm:w-36 hover:bg-orange-600 transition-all bg-orange-500 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2"
+						onClick={() => {
+							refetch();
+							inputRef.current?.focus();
+						}}
+					>
 						NEW QUOTE
 					</button>
 				</div>
