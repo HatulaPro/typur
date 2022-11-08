@@ -5,7 +5,7 @@ export function HistoryViewer({ values, visible }: { values: number[]; visible: 
 	const bestValue = Math.max(...values);
 	return (
 		<div className={cx('w-64 bg-gray-900 transition-all rounded overflow-hidden relative', visible ? 'h-52 p-2' : 'h-0 p-0')}>
-			<div className="h-8">Past Performences</div>
+			<div className="h-8">Past Performances</div>
 			{visible && (
 				<div className="gap-2 h-40 flex flex-row items-end">
 					{values.map((val, id) => (
