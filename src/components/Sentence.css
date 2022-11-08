@@ -15,3 +15,18 @@
 	background-size: 600px;
 	animation: progressBarAnimation 1.2s ease-out 0s infinite forwards;
 }
+
+@keyframes instructionAnimation {
+	0% {
+		transform: translate(-50%, -100%);
+	}
+	100% {
+		transform: translate(-50%, -125%);
+	}
+}
+
+.Sentence_instructions {
+	left: 50%;
+	transform: translate(-50%, -100%);
+	animation: instructionAnimation 1s ease-in-out 0s infinite alternate;
+}

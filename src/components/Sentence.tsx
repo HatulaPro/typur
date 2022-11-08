@@ -1,3 +1,5 @@
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { settingsContext } from '../App';
 import { cx } from '../general';
@@ -134,20 +136,28 @@ export function Sentence({ content, author, refetch }: { content: string; author
 					<div>{Math.round((correctCharsCount / content.length) * 100)}%</div>
 					<div className="bg-white h-2 flex-grow transition-all rounded-r Sentence_progressBar" style={{ maxWidth: `${(correctCharsCount / content.length) * 100}%` }}></div>
 				</div>
-				<h1 ref={textRef} className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all m-auto mt-2')}>
-					{hasCompleted ? (
-						<span className="text-green-500">{content}</span>
-					) : (
-						<>
-							<span className="text-green-500">{doneHalf}</span>
-							<span className="App_highlightedText text-green-500">
-								{' ' + splitWords![currentWordIndex].slice(0, Math.max(lastMatchIndex, 0))}
-								<span className="text-red-500 underline">{redContent}</span>
-							</span>
-							{todoHalf}
-						</>
-					)}
-				</h1>
+				<div className="flex flex-col relative">
+					<div className={cx('Sentence_instructions absolute text-xl sm:text-4xl md:text-5xl flex flex-row items-center gap-1 text-orange-400 transition-all', correctCharsCount !== 0 && 'opacity-0')}>
+						<FontAwesomeIcon icon={faArrowDown} size="xl" />
+						<span>Type this</span>
+						<FontAwesomeIcon icon={faArrowDown} size="xl" />
+					</div>
+					<h1 ref={textRef} className={cx(hasCompleted ? 'text-3xl md:text-5xl lg:text-6xl' : 'text-2xl sm:text-5xl md:text-6xl lg:text-7xl', 'text-center transition-all m-auto mt-2')}>
+						{hasCompleted ? (
+							<span className="text-green-500">{content}</span>
+						) : (
+							<>
+								<span className="text-green-500">{doneHalf}</span>
+								<span className="App_highlightedText text-green-500">
+									{' ' + splitWords![currentWordIndex].slice(0, Math.max(lastMatchIndex, 0))}
+									<span className="text-red-500 underline">{redContent}</span>
+								</span>
+								{todoHalf}
+							</>
+						)}
+					</h1>
+				</div>
+
 				<div className={cx(hasCompleted ? 'max-h-full' : 'max-h-0', 'overflow-hidden transition-all')}>
 					<p className="m-2 text-md sm:text-xl">- {author}</p>
 				</div>
