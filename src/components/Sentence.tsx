@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { settingsContext } from '../App';
 import { cx } from '../general';
+import { HistoryViewer } from './HistoryViewer';
 import './Sentence.css';
 
 function lastMatchingIndex(a?: string, b?: string): number {
@@ -34,6 +35,21 @@ function useTimer(enabled: boolean, halted: boolean): number | null {
 	return enabled ? timeInSecs : null;
 }
 
+function useHistory() {
+	function getCurrentHistory() {
+		const currentHistory = localStorage.getItem('history');
+		return currentHistory ? (JSON.parse(currentHistory) as number[]) : [];
+	}
+	const [history, setHistory] = useState<number[]>(getCurrentHistory());
+	useEffect(() => {
+		if (history) {
+			localStorage.setItem('history', JSON.stringify(history));
+		}
+	}, [history]);
+
+	return [history, setHistory] as const;
+}
+
 export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
 	const splitWords = useMemo(() => content.split(' '), [content]);
 	const textRef = useRef<HTMLHeadingElement | null>(null);
@@ -42,6 +58,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	const [currentWordStartingIndex, setCurrentWordStartingIndex] = useState<number>(0);
 	const [currentInput, setCurrentInput] = useState<string>('');
 	const [hasCompleted, setCompleted] = useState<boolean>(false);
+	const [history, setHistory] = useHistory();
 
 	const doneHalf = splitWords ? splitWords.slice(0, currentWordIndex).join(' ') : '';
 
@@ -77,6 +94,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 		if (currentWordIndex === splitWords.length - 1 && e.target.value === splitWords![currentWordIndex]) {
 			setCompleted(true);
 			setCurrentInput('');
+			setHistory([...history, (correctCharsCount / timeInSecs!) * 60].slice(-5));
 		} else if (e.target.value === splitWords![currentWordIndex] + ' ') {
 			setCurrentWordIndex(currentWordIndex + 1);
 			setCurrentInput('');
@@ -98,7 +116,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 				{timeInSecs !== null && (settings.showTime || hasCompleted) && (
 					<>
 						<p>{timeInSecs}s</p>
-						<p>{Math.round(((doneHalf.length + lastMatchIndex) / timeInSecs) * 60)} chars/minute</p>
+						<p>{hasCompleted ? Math.round(history[history.length - 1]) : Math.round((correctCharsCount / timeInSecs) * 60)} chars/minute</p>
 					</>
 				)}
 			</div>
@@ -126,6 +144,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 					<p className="m-2 text-md sm:text-xl">- {author}</p>
 				</div>
 			</div>
+			<HistoryViewer values={history} visible={hasCompleted} />
 			<div className="flex-grow w-5/6 md:w-1/2 flex justify-start sm:justify-center flex-col">
 				<input type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
 				<div className="flex justify-evenly mt-4 md:mt-8 gap-1">

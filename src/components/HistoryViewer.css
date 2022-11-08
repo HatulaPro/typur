@@ -1,0 +1,18 @@
+div:hover > .HistoryViewer_unitSpan {
+	opacity: 1 !important;
+}
+
+@keyframes graphColumnAnimation {
+	0% {
+		max-height: 0;
+	}
+	100% {
+		max-height: 10rem;
+	}
+}
+
+.HistoryViewer_graphColumn {
+	max-height: 0;
+	animation: graphColumnAnimation 0.8s ease;
+	animation-fill-mode: forwards;
+}
