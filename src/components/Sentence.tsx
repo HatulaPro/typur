@@ -21,7 +21,7 @@ function useTimer(enabled: boolean, halted: boolean): number | null {
 				if (!halted) {
 					setTimeInSecs(Math.round((new Date().getTime() - startingTime.getTime()) / 1000));
 				}
-			}, 250);
+			}, 100);
 
 			return () => {
 				clearInterval(interval);
