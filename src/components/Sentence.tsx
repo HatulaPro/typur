@@ -156,7 +156,13 @@ export function Sentence({ content, author, refetch }: { content: string; author
 			<div className="flex-grow w-5/6 md:w-1/2 flex justify-start sm:justify-center flex-col">
 				<input ref={inputRef} type="text" disabled={hasCompleted} className="text-center text-xl sm:text-5xl disabled:border-transparent disabled:text-xs disabled:p-0 transition-all white bg-transparent border-2 rounded-lg outline-none p-1" autoFocus value={currentInput} onChange={onNextChar} />
 				<div className="flex justify-evenly mt-4 md:mt-8 gap-1">
-					<button className="w-28 sm:w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2" onClick={resetState}>
+					<button
+						className="w-28 sm:w-36 hover:bg-pink-700 transition-all bg-pink-800 rounded text-md md:text-xl p-1 sm:px-3 sm:py-2"
+						onClick={() => {
+							resetState();
+							inputRef.current?.focus();
+						}}
+					>
 						RESTART
 					</button>
 					{Boolean(navigator.share) && (
