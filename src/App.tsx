@@ -55,18 +55,18 @@ function SettingsMenu({ isOpen, setOpen }: { isOpen: boolean; setOpen: (isOpen: 
 
 	return (
 		<div>
-			<div className={cx('fixed top-0 h-screen w-screen bg-gray-800 transition-all', isOpen ? 'left-0 opacity-80' : '-left-full opacity-0')} onClick={() => setOpen(false)}></div>
-			<div className={cx('fixed top-0 h-full bg-gray-200 max-w-sm w-4/5 transition-all py-3 box-border', isOpen ? 'left-0' : '-left-full')}>
-				<h3 className="text-3xl text-center">Settings</h3>
+			<div className={cx('fixed left-0 h-screen w-screen bg-black transition-all', isOpen ? 'top-0 opacity-40' : '-top-full opacity-0')} onClick={() => setOpen(false)}></div>
+			<div className={cx('fixed top-0 h-full bg-gray-800 max-w-sm w-4/5 transition-all py-3 px-2 box-border text-white', isOpen ? 'left-0' : '-left-full')}>
+				<h3 className="text-4xl text-center my-8">Settings</h3>
 
-				<div className="mt-2 ml-2">
+				<div className="mt-4 ml-2">
 					<input type="checkbox" id="hardModeCheckbox" checked={settings.hardMode} onChange={(e) => updateHardModeSetting(e.target.checked)} />
 					<label htmlFor="hardModeCheckbox" className="text-xl">
 						Enable Hard Mode
 					</label>
 				</div>
 
-				<div className="mt-2 ml-2">
+				<div className="mt-4 ml-2">
 					<input type="checkbox" id="showTimeCheckbox" checked={settings.showTime} onChange={(e) => updateShowTimeSetting(e.target.checked)} />
 					<label htmlFor="showTimeCheckbox" className="text-xl">
 						Show Time
@@ -108,10 +108,10 @@ function App() {
 					<Sentence content={quote.content} author={quote.author} refetch={refetch} />
 				)}
 			</div>
-			<button className="fixed top-0 left-0 w-4 h-4 m-4 grid place-items-center" onClick={() => setSettingsOpen(true)}>
+			<SettingsMenu isOpen={settingsOpen} setOpen={setSettingsOpen} />
+			<button className="fixed top-0 left-0 w-4 h-4 m-4 grid place-items-center" onClick={() => setSettingsOpen((prev) => !prev)}>
 				<FontAwesomeIcon className="hover:rotate-45 text-white hover:text-gray-200 transition-all" icon={faGear} size="xl" />
 			</button>
-			<SettingsMenu isOpen={settingsOpen} setOpen={setSettingsOpen} />
 		</SettingsContextProvider>
 	);
 }

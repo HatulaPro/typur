@@ -28,14 +28,14 @@ input[type='checkbox'] + label::before {
 	top: -0.25rem;
 	transform: translateX(-100%);
 	border-radius: 999px;
-	background-color: #ddd;
-	border: 0.1rem solid #bbb;
+	background-color: rgb(147, 147, 147);
+	border: 0.1rem solid rgb(104, 104, 104);
 	box-sizing: border-box;
 	cursor: pointer;
 }
 
 input[type='checkbox'] + label::after {
-	content: '❌';
+	content: '';
 	text-align: center;
 	font-size: 0.9rem;
 	position: absolute;
@@ -47,11 +47,11 @@ input[type='checkbox'] + label::after {
 	top: -0.1rem;
 	left: 0rem;
 	transform: translateX(-270%);
-	background-color: #ffffffcc;
+	background-color: white;
 	transition: transform 0.2s;
 }
 
 input[type='checkbox']:checked + label::after {
-	content: '✔';
+	content: '';
 	transform: translateX(-125%);
 }
