@@ -14,3 +14,8 @@
 	background-position-x: 100%;
 	animation: flicker 1s steps(2) infinite forwards;
 }
+
+.App_background {
+	background-image: radial-gradient(#ffffff20 7%, transparent 7%, transparent 100%);
+	background-size: 60px 60px;
+}

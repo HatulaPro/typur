@@ -94,7 +94,12 @@ function App() {
 
 	return (
 		<SettingsContextProvider>
-			<div className={cx('bg-gray-800 text-white h-screen transition')}>
+			<div
+				className="App_background bg-gray-800 text-white h-screen"
+				onMouseMove={(e) => {
+					e.currentTarget.style.backgroundPosition = `${Math.round(e.clientX / -10)}px ${Math.round(e.clientY / -10)}px`;
+				}}
+			>
 				{isLoading || isFetching || !quote ? (
 					<div className="h-full grid place-items-center">
 						<LoadingSpinner />
