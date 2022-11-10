@@ -95,23 +95,24 @@ function App() {
 	return (
 		<SettingsContextProvider>
 			<div
-				className="App_background bg-gray-800 text-white h-screen"
 				onMouseMove={(e) => {
-					e.currentTarget.style.backgroundPosition = `${Math.round(e.clientX / -10)}px ${Math.round(e.clientY / -10)}px`;
+					(e.currentTarget.children[0] as HTMLDivElement).style.backgroundPosition = `${Math.round(e.clientX / -10)}px ${Math.round(e.clientY / -10)}px`;
 				}}
 			>
-				{isLoading || isFetching || !quote ? (
-					<div className="h-full grid place-items-center">
-						<LoadingSpinner />
-					</div>
-				) : (
-					<Sentence content={quote.content} author={quote.author} refetch={refetch} />
-				)}
+				<div className="App_background bg-gray-800 text-white h-screen">
+					{isLoading || isFetching || !quote ? (
+						<div className="h-full grid place-items-center">
+							<LoadingSpinner />
+						</div>
+					) : (
+						<Sentence content={quote.content} author={quote.author} refetch={refetch} />
+					)}
+				</div>
+				<SettingsMenu isOpen={settingsOpen} setOpen={setSettingsOpen} />
+				<button className="fixed top-0 left-0 w-4 h-4 m-4 grid place-items-center" onClick={() => setSettingsOpen((prev) => !prev)}>
+					<FontAwesomeIcon className="hover:rotate-45 text-white hover:text-gray-200 transition-all" icon={faGear} size="xl" />
+				</button>
 			</div>
-			<SettingsMenu isOpen={settingsOpen} setOpen={setSettingsOpen} />
-			<button className="fixed top-0 left-0 w-4 h-4 m-4 grid place-items-center" onClick={() => setSettingsOpen((prev) => !prev)}>
-				<FontAwesomeIcon className="hover:rotate-45 text-white hover:text-gray-200 transition-all" icon={faGear} size="xl" />
-			</button>
 		</SettingsContextProvider>
 	);
 }
