@@ -15,27 +15,38 @@ function lastMatchingIndex(a?: string, b?: string): number {
 	return a.length;
 }
 
-function useTimer(enabled: boolean, halted: boolean): number | null {
+function useTimer(enabled: boolean, halted: boolean) {
 	const startingTime = useMemo(() => new Date(), [enabled]);
-	const [timeInSecs, setTimeInSecs] = useState<number>(0);
+	const timeInSecs = useRef<number>(0);
+	const subs = useRef<Set<(x: number | null) => void>>(new Set());
 
 	useEffect(() => {
 		if (enabled) {
 			const interval = setInterval(() => {
 				if (!halted) {
-					setTimeInSecs(Math.round((new Date().getTime() - startingTime.getTime()) / 1000));
+					timeInSecs.current = Math.round((new Date().getTime() - startingTime.getTime()) / 1000);
+					subs.current.forEach((f) => f(timeInSecs.current));
 				}
 			}, 100);
 
 			return () => {
 				clearInterval(interval);
 			};
-		} else if (timeInSecs !== 0) {
-			setTimeInSecs(0);
+		} else if (timeInSecs.current !== 0) {
+			timeInSecs.current = 0;
 		}
-	}, [startingTime, enabled, halted, setTimeInSecs]);
+		subs.current.forEach((f) => f(timeInSecs.current));
+	}, [startingTime, enabled, halted]);
 
-	return enabled ? timeInSecs : null;
+	function subscribe(f: (x: number | null) => void) {
+		subs.current.add(f);
+
+		return () => {
+			subs.current.delete(f);
+		};
+	}
+
+	return [enabled ? timeInSecs.current : null, subscribe] as const;
 }
 
 function useHistory() {
@@ -51,6 +62,27 @@ function useHistory() {
 	}, [history]);
 
 	return [history, setHistory] as const;
+}
+
+function TimerViewer({ timeInSecs, subscribe, hasCompleted, correctCharsCount }: { timeInSecs: number | null; subscribe: (f: (x: number | null) => void) => () => void; hasCompleted: boolean; correctCharsCount: number }) {
+	const { settings } = useContext(settingsContext);
+	const [currentTime, setCurrentTime] = useState<number | null>(timeInSecs);
+	const [history] = useHistory();
+
+	useEffect(() => {
+		const sub = subscribe((newTime) => setCurrentTime(newTime));
+
+		return sub;
+	}, [subscribe, setCurrentTime]);
+
+	return currentTime && (settings.showTime || hasCompleted) ? (
+		<>
+			<p>{currentTime}s</p>
+			<p>{hasCompleted ? Math.round(history[history.length - 1]) : Math.round((correctCharsCount / currentTime) * 60)} chars/minute</p>
+		</>
+	) : (
+		<></>
+	);
 }
 
 export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
@@ -70,14 +102,14 @@ export function Sentence({ content, author, refetch }: { content: string; author
 		}
 	}, [hasCompleted, inputRef.current]);
 
-	const doneHalf = splitWords ? splitWords.slice(0, currentWordIndex).join(' ') : '';
+	const doneHalf = splitWords.slice(0, currentWordIndex).join(' ');
 
-	const lastMatchIndex = splitWords ? lastMatchingIndex(splitWords[currentWordIndex], currentInput) : 0;
+	const lastMatchIndex = lastMatchingIndex(splitWords[currentWordIndex], currentInput);
 	const redContent = content.slice(currentWordStartingIndex + lastMatchIndex, currentWordStartingIndex + Math.max(lastMatchIndex, currentInput.length));
 
 	const todoHalf = content.slice(doneHalf.length + lastMatchIndex + redContent.length + (currentInput.length && currentWordIndex ? 1 : 0));
 
-	const timeInSecs = useTimer(currentWordIndex !== 0 || currentInput.length !== 0, hasCompleted);
+	const [timeInSecs, subscribe] = useTimer(currentWordIndex !== 0 || currentInput.length !== 0, hasCompleted);
 
 	function resetState() {
 		setCurrentWordIndex(0);
@@ -123,12 +155,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	return (
 		<div className="flex flex-col h-full justify-evenly items-center">
 			<div className={cx('text-center flex justify-center flex-col transition-all mt-4', hasCompleted ? 'flex-grow text-3xl' : 'md:h-16 h-8')}>
-				{timeInSecs !== null && (settings.showTime || hasCompleted) && (
-					<>
-						<p>{timeInSecs}s</p>
-						<p>{hasCompleted ? Math.round(history[history.length - 1]) : Math.round((correctCharsCount / timeInSecs) * 60)} chars/minute</p>
-					</>
-				)}
+				<TimerViewer correctCharsCount={correctCharsCount} hasCompleted={hasCompleted} subscribe={subscribe} timeInSecs={timeInSecs} />
 			</div>
 
 			<div className="flex-grow w-4/5 ">

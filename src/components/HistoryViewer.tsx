@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { cx } from '../general';
 import './HistoryViewer.css';
 
-export function HistoryViewer({ values, visible }: { values: number[]; visible: boolean }) {
+export const HistoryViewer = memo(({ values, visible }: { values: number[]; visible: boolean }) => {
 	const bestValue = Math.max(...values);
 	return (
 		<div className={cx('w-64 bg-gray-900 transition-all rounded overflow-hidden relative', visible ? 'h-52 p-2' : 'h-0 p-0')}>
@@ -18,4 +19,4 @@ export function HistoryViewer({ values, visible }: { values: number[]; visible: 
 			<div className="HistoryViewer_unitSpan absolute right-0 bottom-0 bg-gray-900 p-1 text-xs opacity-0 transition-all rounded-tl">chars/minute</div>
 		</div>
 	);
-}
+});
