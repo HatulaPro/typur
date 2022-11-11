@@ -1,6 +1,6 @@
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { settingsContext } from '../App';
 import { cx } from '../general';
 import { HistoryViewer } from './HistoryViewer';
@@ -17,14 +17,14 @@ function lastMatchingIndex(a?: string, b?: string): number {
 
 function useTimer(enabled: boolean, halted: boolean) {
 	const startingTime = useMemo(() => new Date(), [enabled]);
-	const timeInSecs = useRef<number>(0);
+	const timeInSecs = useRef<number | null>(enabled ? 0 : null);
 	const subs = useRef<Set<(x: number | null) => void>>(new Set());
 
 	useEffect(() => {
 		if (enabled) {
 			const interval = setInterval(() => {
 				if (!halted) {
-					timeInSecs.current = Math.round((new Date().getTime() - startingTime.getTime()) / 1000);
+					timeInSecs.current = enabled ? Math.round((new Date().getTime() - startingTime.getTime()) / 1000) : null;
 					subs.current.forEach((f) => f(timeInSecs.current));
 				}
 			}, 100);
@@ -33,7 +33,7 @@ function useTimer(enabled: boolean, halted: boolean) {
 				clearInterval(interval);
 			};
 		} else if (timeInSecs.current !== 0) {
-			timeInSecs.current = 0;
+			timeInSecs.current = enabled ? 0 : null;
 		}
 		subs.current.forEach((f) => f(timeInSecs.current));
 	}, [startingTime, enabled, halted]);
@@ -64,7 +64,7 @@ function useHistory() {
 	return [history, setHistory] as const;
 }
 
-function TimerViewer({ timeInSecs, subscribe, hasCompleted, correctCharsCount }: { timeInSecs: number | null; subscribe: (f: (x: number | null) => void) => () => void; hasCompleted: boolean; correctCharsCount: number }) {
+const TimerViewer = memo(({ timeInSecs, subscribe, hasCompleted, correctCharsCount }: { timeInSecs: number | null; subscribe: (f: (x: number | null) => void) => () => void; hasCompleted: boolean; correctCharsCount: number }) => {
 	const { settings } = useContext(settingsContext);
 	const [currentTime, setCurrentTime] = useState<number | null>(timeInSecs);
 	const [history] = useHistory();
@@ -75,7 +75,7 @@ function TimerViewer({ timeInSecs, subscribe, hasCompleted, correctCharsCount }:
 		return sub;
 	}, [subscribe, setCurrentTime]);
 
-	return currentTime && (settings.showTime || hasCompleted) ? (
+	return currentTime !== null && (settings.showTime || hasCompleted) ? (
 		<>
 			<p>{currentTime}s</p>
 			<p>{hasCompleted ? Math.round(history[history.length - 1]) : Math.round((correctCharsCount / currentTime) * 60)} chars/minute</p>
@@ -83,7 +83,7 @@ function TimerViewer({ timeInSecs, subscribe, hasCompleted, correctCharsCount }:
 	) : (
 		<></>
 	);
-}
+});
 
 export function Sentence({ content, author, refetch }: { content: string; author: string; refetch: () => void }) {
 	const splitWords = useMemo(() => content.split(' '), [content]);
