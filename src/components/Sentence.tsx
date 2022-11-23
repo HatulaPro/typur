@@ -97,7 +97,7 @@ export function Sentence({ content, author, refetch }: { content: string; author
 	const [history, setHistory] = useHistory();
 
 	useEffect(() => {
-		if (inputRef.current && !hasCompleted) {
+		if (inputRef.current !== null && !hasCompleted) {
 			inputRef.current.focus();
 		}
 	}, [hasCompleted, inputRef.current]);
