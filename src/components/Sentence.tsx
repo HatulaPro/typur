@@ -102,6 +102,26 @@ export function Sentence({ content, author, refetch }: { content: string; author
 		}
 	}, [hasCompleted, inputRef.current]);
 
+	useEffect(() => {
+		function listener(e: KeyboardEvent) {
+			if (hasCompleted) {
+				if (e.key === 'r') {
+					resetState();
+					e.preventDefault();
+					inputRef.current?.focus();
+				} else if (e.key === 'n') {
+					refetch();
+					e.preventDefault();
+					inputRef.current?.focus();
+				}
+			}
+		}
+		document.addEventListener('keypress', listener);
+		return () => {
+			document.removeEventListener('keypress', listener);
+		};
+	}, [hasCompleted]);
+
 	const doneHalf = splitWords.slice(0, currentWordIndex).join(' ');
 
 	const lastMatchIndex = lastMatchingIndex(splitWords[currentWordIndex], currentInput);
